@@ -12,7 +12,6 @@ object PracMutatingCode {
   val logger = LoggerFactory.getLogger("Main")
 
   def main(args: Array[String]): Unit = {
-    moduleReader()
-
+    launchAllModules()
   }
 }

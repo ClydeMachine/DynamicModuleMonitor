@@ -26,18 +26,19 @@ object DirectoryTools {
     readlines.toArray
   }
 
-  def readModuleFiles(modulefiles: Array[String]): Unit = {
-    val modules_loaded: mutable.Map[String, Array[String]] = mutable.Map()
+  def readModuleFiles(modulefiles: Array[String]): Map[String, Array[String]] = {
+    val module_contents: mutable.Map[String, Array[String]] = mutable.Map()
 
     logger.info("Start reading in module file contents.")
     for(modulefilename <- modulefiles) {
       logger.info(s"Passing $modulefilename for reading.")
-      modules_loaded += (
+      module_contents += (
         modulefilename -> readFile(modulefilename)
       )
     }
 
-    logger.info(s"Module file contents loaded! Map is ${modules_loaded.size} items large.")
+    logger.info(s"Module file contents loaded! Map is ${module_contents.size} items large.")
+    module_contents.toMap[String, Array[String]]
   }
 
   def describeWorkingDirectory(): String = new File(".").getCanonicalPath
