@@ -4,10 +4,7 @@ import com.typesafe.config.ConfigFactory
 import org.slf4j.LoggerFactory
 
 /**
-  * Launch the service and it will monitor for .scala files in /loadingdock/.
-  * When .scala files are found, they are executed.
-  * When .conf files are found, they are interpretted and written as .scala files,
-  * then executed.
+  * Some test code you can play with to get familiar.
   */
 object SandboxObject {
   val loadingdock_path = ConfigFactory.load().getString("loadingdock_path")
