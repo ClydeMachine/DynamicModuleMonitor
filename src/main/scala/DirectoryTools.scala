@@ -14,6 +14,17 @@ object DirectoryTools {
   val loadingdock_path = ConfigFactory.load().getString("loadingdock_path")
   val logger = LoggerFactory.getLogger("DirectoryTools")
 
+  def emptyDirectory(): Unit = {
+    for (filename <- describeDirectory(loadingdock_path)) {
+      val file = new File(s"$loadingdock_path$filename")
+      if (!file.isDirectory && filename != ".gitkeep") {
+        file.delete()
+        logger.info(s"Deleted $filename from $loadingdock_path.")
+      }
+    }
+    logger.info(s"Emptied directory at $loadingdock_path.")
+  }
+
   def writeToDirectory(modulecontents: String, modulename: String): Unit = {
     val filename_out = s"${loadingdock_path}${modulename}"
     val writer = new PrintWriter(new FileOutputStream(new File(filename_out), true))

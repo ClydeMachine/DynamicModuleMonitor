@@ -7,6 +7,8 @@ import org.slf4j.LoggerFactory
 import scala.collection.mutable.ArrayBuffer
 import ModuleWriterTemplates._
 
+import scala.sys.process.Process
+
 object ModuleTools {
 
   val loadingdock_path = ConfigFactory.load().getString("loadingdock_path")
@@ -15,7 +17,7 @@ object ModuleTools {
   /** Launch the file right from the loaddock_path directory. */
   def moduleLauncher(modulefilename: String): Unit = {
     logger.info(s"Module $modulefilename launching.")
-    Runtime.getRuntime.exec(s"scala -nc $loadingdock_path$modulefilename")
+    val process = Process(s"scala -nc $modulefilename")
     logger.info(s"Module $modulefilename should now have executed!")
   }
 
@@ -39,6 +41,7 @@ object ModuleTools {
   /**
     * When a configuration file's parameters are sent this function, they are interpretted
     * and used to write out new .scala modules based on the ModuleWriterTemplates.
+    *
     * @param userparam
     * @return
     */
@@ -79,7 +82,10 @@ object ModuleTools {
       previousModules = currentModules
       currentModules = describeDirectory(loadingdock_path).toBuffer[String].asInstanceOf[ArrayBuffer[String]]
       for (module <- currentModules) {
-        if (!previousModules.contains(module) && module.contains(".scala")) {
+        if (!previousModules.contains(module) && module == ".cleanup") {
+          logger.info(s".cleanup received - emptying the loadingdock.")
+          emptyDirectory()
+        } else if (!previousModules.contains(module) && module.contains(".scala")) {
           logger.info(s"New module discovered: $module.")
           currentModules.append(module)
           moduleLauncher(module)
