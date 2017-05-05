@@ -17,9 +17,9 @@ This will satisfy the criteria for what I call self-mutating code.
 1. [x] Loaded modules are executed.
 1. [x] Code that takes a user's parameter input from a file in that directory, and creates a module on the fly.
 1. [x] That module is written to the directory, and thanks to steps 1-3, it launches.
-1. [ ] If file named ".cleanup", empty the loadingdock directory of all modules.
+1. [x] If file named ".cleanup", empty the loadingdock directory of all modules.
 1. [ ] Change how configs work: If a module is found, check if a config is present. If no config, run it like normal.
-1. [ ] Make blueprint files "x.blueprint" so they don't get confused with .confs.
+1. [x] Make blueprint files "x.blueprint" so they don't get confused with .confs.
 1. [ ] If a module/config pair are found, the config should describe how the module is to be run (i.e. start a Future for it and run x times at y interval, output results to z file.)
 1. [ ] Make a simple superclass and child.
 1. [ ] Make a module that creates a child extending that superclass.

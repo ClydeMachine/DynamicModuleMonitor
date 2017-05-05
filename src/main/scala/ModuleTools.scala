@@ -21,14 +21,17 @@ object ModuleTools {
   /** Launch the file right from the loaddock_path directory. */
   def moduleLauncher(modulefilename: String): Unit = {
     logger.info(s"Module $modulefilename launching.")
-    val process = Process(Seq(scalaCLIPath(), "-nc", s"$loadingdock_path$modulefilename"),
-      None,
-      "PATH" -> "C:\\Program Files (x86)\\scala\\bin"
+    val process = Process(
+      Seq(
+        scalaCLIPath(),
+        "-nc",
+        s"$loadingdock_path$modulefilename"
+      )
     ).lineStream_!
     for(output <- process) {
       logger.info(s"($modulefilename) $output")
     }
-    logger.info(s"Module $modulefilename should now have executed!")
+    logger.info(s"Module $modulefilename has finished.")
   }
 
   /** Read modules from directory,
@@ -76,6 +79,10 @@ object ModuleTools {
     logger.info(s"moduleWriter finished.")
   }
 
+  /**
+    * Likely an unnecessary function as a restart of the service effectively fires off all module launches.
+    * Will remove after confirming this is not needed.
+    */
   def launchAllModules(): Unit = {
     for (modulefilename <- describeDirectory(loadingdock_path)) {
       if (!modulefilename.contains(".conf")) moduleLauncher(modulefilename)
@@ -83,7 +90,6 @@ object ModuleTools {
   }
 
   def newModuleMonitor(monitorwindow: Int = 120): Unit = {
-
     logger.info(s"Monitoring for new modules for $monitorwindow seconds...")
     var previousModules: ArrayBuffer[String] = ArrayBuffer()
     var currentModules: ArrayBuffer[String] = ArrayBuffer()
@@ -96,18 +102,18 @@ object ModuleTools {
           logger.info(s".cleanup received - emptying the loadingdock.")
           emptyDirectory()
         } else if (!previousModules.contains(module) && module.contains(".scala")) {
-          logger.info(s"New module discovered: $module.")
+          logger.warn(s"New module discovered: $module.")
           currentModules.append(module)
 
           // Launch the module as a concurrent task to allow for other modules to start.
           Future {moduleLauncher(module)}
-          logger.info(s"New module $module running concurrently.")
-        } else if (!previousModules.contains(module) && module.contains(".conf")) {
+          logger.warn(s"New module $module running concurrently.")
+        } else if (!previousModules.contains(module) && module.contains(".blueprint")) {
           logger.info(s"New configuration discovered: $module.")
           currentModules.append(module)
           moduleWriter(module)
         } else if (!previousModules.contains(module)) {
-          logger.info(s"File $module not a module or config, ignoring.")
+          logger.info(s"File $module not a module or blueprint, ignoring.")
           currentModules.append(module)
         }
       }
