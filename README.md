@@ -21,7 +21,6 @@ You'll want to create an ```application.conf``` file like the example one I've m
 ```
 // This is what your application.conf may contain. For now this is all you need in it.
 loadingdock_path = "loadingdock/"
-
 ```
 
 Your package may use the library something like the following:
