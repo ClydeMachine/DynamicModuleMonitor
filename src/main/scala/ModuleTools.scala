@@ -84,11 +84,10 @@ object ModuleTools {
         } else if (!previousModules.contains(module)) {
           logger.info(s"File $module not a module or config, ignoring.")
           currentModules.append(module)
-        } else {
-          print(".")
         }
-        Thread sleep 1000
       }
+      print(".")
+      Thread sleep 1000
     }
 
     logger.info("Monitor has ended.")

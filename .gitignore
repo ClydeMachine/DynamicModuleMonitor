@@ -1,4 +1,6 @@
 .idea/
 target/
 *.class
-var/log/
+var/log/*.log
+loadingdock/*.conf*
+loadingdock/*.scala*
