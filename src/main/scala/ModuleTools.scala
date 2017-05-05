@@ -7,6 +7,8 @@ import org.slf4j.LoggerFactory
 import scala.collection.mutable.ArrayBuffer
 import ModuleWriterTemplates._
 
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.sys.process.Process
 
 object ModuleTools {
@@ -17,7 +19,13 @@ object ModuleTools {
   /** Launch the file right from the loaddock_path directory. */
   def moduleLauncher(modulefilename: String): Unit = {
     logger.info(s"Module $modulefilename launching.")
-    val process = Process(s"scala -nc $modulefilename")
+    val process = Process(Seq("C:\\Program Files (x86)\\scala\\bin\\scala.bat", "-nc", s"$loadingdock_path$modulefilename"),
+      None,
+      "PATH" -> "C:\\Program Files (x86)\\scala\\bin"
+    ).lineStream_!
+    for(output <- process) {
+      logger.info(s"($modulefilename) $output")
+    }
     logger.info(s"Module $modulefilename should now have executed!")
   }
 
@@ -88,7 +96,10 @@ object ModuleTools {
         } else if (!previousModules.contains(module) && module.contains(".scala")) {
           logger.info(s"New module discovered: $module.")
           currentModules.append(module)
-          moduleLauncher(module)
+
+          // Launch the module as a concurrent task to allow for other modules to start.
+          Future {moduleLauncher(module)}
+          logger.info(s"New module $module running concurrently.")
         } else if (!previousModules.contains(module) && module.contains(".conf")) {
           logger.info(s"New configuration discovered: $module.")
           currentModules.append(module)
