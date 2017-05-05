@@ -1,4 +1,4 @@
-package pracmutatingcode
+package dynamicmodulemonitor
 
 import DirectoryTools._
 import com.typesafe.config.ConfigFactory
@@ -65,43 +65,8 @@ object ModuleTools {
     */
   def launchAllModules(): Unit = {
     for (modulefilename <- describeDirectory(loadingdock_path)) {
-      if (!modulefilename.contains(".conf")) moduleLauncher(modulefilename)
+      if (modulefilename.contains(".scala")) moduleLauncher(modulefilename)
     }
-  }
-
-  def newModuleMonitor(monitorwindow: Int = 120): Unit = {
-    logger.info(s"Monitoring for new modules for $monitorwindow seconds...")
-    var previousModules: ArrayBuffer[String] = ArrayBuffer()
-    var currentModules: ArrayBuffer[String] = ArrayBuffer()
-
-    for (i <- monitorwindow to 0 by -1) {
-      previousModules = currentModules
-      currentModules = describeDirectory(loadingdock_path).toBuffer[String].asInstanceOf[ArrayBuffer[String]]
-      for (module <- currentModules) {
-        if (!previousModules.contains(module) && module == ".cleanup") {
-          logger.info(s".cleanup received - emptying the loadingdock.")
-          emptyDirectory()
-        } else if (!previousModules.contains(module) && module.contains(".scala")) {
-          logger.warn(s"New module discovered: $module.")
-          currentModules.append(module)
-
-          // Launch the module as a concurrent task to allow for other modules to start.
-          Future {moduleLauncher(module)}
-          logger.warn(s"New module $module running concurrently.")
-        } else if (!previousModules.contains(module) && module.contains(".blueprint")) {
-          logger.info(s"New configuration discovered: $module.")
-          currentModules.append(module)
-          moduleWriter(module)
-        } else if (!previousModules.contains(module)) {
-          logger.info(s"File $module not a module or blueprint, ignoring.")
-          currentModules.append(module)
-        }
-      }
-      print(".")
-      Thread sleep 1000
-    }
-
-    logger.info("Monitor has ended.")
   }
 
 }

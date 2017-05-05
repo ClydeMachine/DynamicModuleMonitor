@@ -1,4 +1,4 @@
-package pracmutatingcode
+package dynamicmodulemonitor
 
 import com.typesafe.config.ConfigFactory
 import org.slf4j.LoggerFactory

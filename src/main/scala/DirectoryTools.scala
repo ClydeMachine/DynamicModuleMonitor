@@ -1,4 +1,4 @@
-package pracmutatingcode
+package dynamicmodulemonitor
 
 import scala.collection.mutable.ArrayBuffer
 import java.io.{File, FileOutputStream, PrintWriter}
