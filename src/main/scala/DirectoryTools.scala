@@ -2,7 +2,6 @@ package pracmutatingcode
 
 import scala.collection.mutable.ArrayBuffer
 import java.io.{File, FileOutputStream, PrintWriter}
-import java.util.Calendar
 
 import com.typesafe.config.ConfigFactory
 import org.slf4j.LoggerFactory

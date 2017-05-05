@@ -36,6 +36,12 @@ object ModuleTools {
     readModuleFiles(modulenames)
   }
 
+  /**
+    * When a configuration file's parameters are sent this function, they are interpretted
+    * and used to write out new .scala modules based on the ModuleWriterTemplates.
+    * @param userparam
+    * @return
+    */
   def modulePieces(userparam: String): String = {
     if (userparam.contains("logwriter")) {
       template_logwriter(userparam)
