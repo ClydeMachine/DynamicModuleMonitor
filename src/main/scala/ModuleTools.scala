@@ -34,29 +34,9 @@ object ModuleTools {
     logger.info(s"Module $modulefilename has finished.")
   }
 
-  /** Read modules from directory,
-    * interpret contents as a sequence of launchable Modules. */
-  def moduleReader(): Map[String, Array[String]] = {
-    logger.info(s"Current dir: ${describeWorkingDirectory()}.")
-
-    logger.info(s"Describing $loadingdock_path.")
-    val modulenames = describeDirectory(loadingdock_path)
-    for(i <- modulenames) logger.info(s"Found module $i.")
-
-    logger.info(s"Loading ${modulenames.length} modules.")
-
-    /**
-      * We *can* load these modules as String Arrays, but we don't need to - improve this to launch them one at a time.
-      */
-    readModuleFiles(modulenames)
-  }
-
   /**
     * When a configuration file's parameters are sent this function, they are interpretted
     * and used to write out new .scala modules based on the ModuleWriterTemplates.
-    *
-    * @param userparam
-    * @return
     */
   def modulePieces(userparam: String): String = {
     if (userparam.contains("logwriter")) {

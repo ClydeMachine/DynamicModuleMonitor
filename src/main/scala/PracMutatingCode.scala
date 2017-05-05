@@ -5,7 +5,7 @@ import ModuleTools._
 import org.slf4j.LoggerFactory
 
 /**
-  * Launch the service and it will monitor for .scala and .conf files in /loadingdock/.
+  * Launch the service and it will monitor for .scala files in /loadingdock/.
   * When .scala files are found, they are executed.
   * When .conf files are found, they are interpretted and written as .scala files,
   * then executed.

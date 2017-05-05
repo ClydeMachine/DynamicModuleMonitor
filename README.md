@@ -1,5 +1,7 @@
 # README
 
+### The below description has changed wildly since the inception of this package. Will update in the near future when I've cleaned up the package a bit.
+
 This is a practice project for writing self-mutating code. It'll start with basic functions of reading and writing files containing Scala code (that is to say, just some basic scripts, no dynamic loading of classes and such).
 
 Ultimately the code will be able to do something like the following:
@@ -21,7 +23,5 @@ This will satisfy the criteria for what I call self-mutating code.
 1. [ ] Change how configs work: If a module is found, check if a config is present. If no config, run it like normal.
 1. [x] Make blueprint files "x.blueprint" so they don't get confused with .confs.
 1. [ ] If a module/config pair are found, the config should describe how the module is to be run (i.e. start a Future for it and run x times at y interval, output results to z file.)
-1. [ ] Make a simple superclass and child.
-1. [ ] Make a module that creates a child extending that superclass.
-1. [ ] Make that module usable in the code (might be tricky without knowing the name of the child class)
 1. [ ] Make the package into a reusable library.
+1. [ ] Change the moduleWriter behaviours such that a package consuming this library can create their own predefined routines, such that if a *.blueprint file is read in at the loadingdock that contains a certain command, a key part of the existing codebase can be triggered. This would ideally be something they could trigger through an API route or would have already taken care of in the logic of their software, but again this is kind of a proof-of-concept thing to solve a particular edge case.
