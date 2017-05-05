@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory
   * When .conf files are found, they are interpretted and written as .scala files,
   * then executed.
   */
-object PracMutatingCode {
+object SandboxObject {
   val loadingdock_path = ConfigFactory.load().getString("loadingdock_path")
   val logger = LoggerFactory.getLogger("Main")
 
