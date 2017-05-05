@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory
   * then executed.
   */
 object PracMutatingCode {
-
   val loadingdock_path = ConfigFactory.load().getString("loadingdock_path")
   val logger = LoggerFactory.getLogger("Main")
 

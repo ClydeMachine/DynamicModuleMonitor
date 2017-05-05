@@ -16,10 +16,12 @@ object ModuleTools {
   val loadingdock_path = ConfigFactory.load().getString("loadingdock_path")
   val logger = LoggerFactory.getLogger("ModuleTools")
 
+  def scalaCLIPath(): String = if (System.getProperty("os.name") contains "Windows") "scala.bat" else "scala"
+
   /** Launch the file right from the loaddock_path directory. */
   def moduleLauncher(modulefilename: String): Unit = {
     logger.info(s"Module $modulefilename launching.")
-    val process = Process(Seq("C:\\Program Files (x86)\\scala\\bin\\scala.bat", "-nc", s"$loadingdock_path$modulefilename"),
+    val process = Process(Seq(scalaCLIPath(), "-nc", s"$loadingdock_path$modulefilename"),
       None,
       "PATH" -> "C:\\Program Files (x86)\\scala\\bin"
     ).lineStream_!
