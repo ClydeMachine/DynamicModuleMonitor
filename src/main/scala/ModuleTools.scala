@@ -73,7 +73,7 @@ object ModuleTools {
       previousModules = currentModules
       currentModules = describeDirectory(loadingdock_path).toBuffer[String].asInstanceOf[ArrayBuffer[String]]
       for (module <- currentModules) {
-        if (!previousModules.contains(module) && !module.contains(".conf")) {
+        if (!previousModules.contains(module) && module.contains(".scala")) {
           logger.info(s"New module discovered: $module.")
           currentModules.append(module)
           moduleLauncher(module)
@@ -81,6 +81,9 @@ object ModuleTools {
           logger.info(s"New configuration discovered: $module.")
           currentModules.append(module)
           moduleWriter(module)
+        } else if (!previousModules.contains(module)) {
+          logger.info(s"File $module not a module or config, ignoring.")
+          currentModules.append(module)
         } else {
           print(".")
         }
