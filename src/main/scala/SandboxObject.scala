@@ -1,6 +1,6 @@
 package dynamicmodulemonitor
 
-import com.typesafe.config.{Config, ConfigFactory}
+import com.typesafe.config.ConfigFactory
 import org.slf4j.LoggerFactory
 
 /**
@@ -32,7 +32,7 @@ object SandboxObject {
   def main(args: Array[String]): Unit = {
     val modulemonitor: DynamicModuleMonitor = new DynamicModuleMonitor(120)
     modulemonitor.start()
-    Thread sleep 300 * 1000
+    Thread sleep 300 * 100
     modulemonitor.stop()
   }
 }

@@ -1,27 +1,43 @@
 # README
 
-### The below description has changed wildly since the inception of this package. Will update in the near future when I've cleaned up the package a bit.
+DynamicModuleMonitor is a simple library for your Scala packages that monitors a "loading dock" directory for new Scala scripts. When new files are added to the directory, they are executed.
 
-This is a practice project for writing self-mutating code. It'll start with basic functions of reading and writing files containing Scala code (that is to say, just some basic scripts, no dynamic loading of classes and such).
+The intended audience for this library consists of those who want to launch scripts via Scala code, in a concurrent fashion, from one common directory. This can alleviate pains of having to run a full package deployment just to push and execute simple scripts on your servers. This library is a proof-of-concept meant for a very particular edge case, and is far from a robust solution to launching concurrent application tasks.
 
-Ultimately the code will be able to do something like the following:
+Future development of this library includes but is not limited to:
 
-- The code base will launch with a generic superclass and at least one child class that extends it.
-- Separately from the code base, we'll create another child class, that will be saved into the loadingdock/ directory, and pulled in as a dynamically-loaded class that can then be used to create new instances.
-- To expand on this, we'll also introduce the ability to create new child classes on the fly with some user-created config files (like a JSON or YAML file), and the code base will write a .scala file containing the new child class. The codebase will then dynamically load in and use this childclass, as before.
+ - [ ] Execute .jar files, not just .scala scripts, since most of the time your code won't be in .scala format at this point in development.
+ - [ ] Incorporate more robust error handling and reporting.
+ - [ ] Incorporate better control of the individual modules' threads, as they run until success/fail, or until the DynamicModuleMonitor process is stopped.
 
-This will satisfy the criteria for what I call self-mutating code.
+## Code Examples
 
-## Checklist
+Refer to the ```SandboxObject``` for some test code, and the ```loadingdockstaging``` directory for some example modules. When one of those is placed in the ```loadingdock``` directory and the monitor is running, you'll see the service execute the module and report its output.
 
-1. [x] Project looks to a directory for modules.
-1. [x] Found modules are loaded.
-1. [x] Loaded modules are executed.
-1. [x] Code that takes a user's parameter input from a file in that directory, and creates a module on the fly.
-1. [x] That module is written to the directory, and thanks to steps 1-3, it launches.
-1. [x] If file named ".cleanup", empty the loadingdock directory of all modules.
-1. [ ] Change how configs work: If a module is found, check if a config is present. If no config, run it like normal.
-1. [x] Make blueprint files "x.blueprint" so they don't get confused with .confs.
-1. [ ] If a module/config pair are found, the config should describe how the module is to be run (i.e. start a Future for it and run x times at y interval, output results to z file.)
-1. [ ] Make the package into a reusable library.
-1. [ ] Change the moduleWriter behaviours such that a package consuming this library can create their own predefined routines, such that if a *.blueprint file is read in at the loadingdock that contains a certain command, a key part of the existing codebase can be triggered. This would ideally be something they could trigger through an API route or would have already taken care of in the logic of their software, but again this is kind of a proof-of-concept thing to solve a particular edge case.
+You'll want to create an ```application.conf``` file like the example one I've made, that specifies what your monitoring directory will be. Absolute and relative paths are supported here - just make sure it includes a trailing "/" slash character.
+
+```
+// This is what your application.conf may contain. For now this is all you need in it
+loadingdock_path = "loadingdock/"
+
+```
+
+Your package may use the library something like the following:
+
+```
+  def example(): Unit = {
+
+    val config: Config = ConfigFactory.load()
+    val modulemonitor: DynamicModuleMonitor = new DynamicModuleMonitor(120, config)
+    modulemonitor.start()
+
+    // Block this thread to simulate code that your software will be doing in the meantime while
+    // the monitor checks for and launches modules.
+    Thread sleep 300 * 100
+
+    // If you wish to stop the monitor (like if you set it to run indefinitely), you'll want stop().
+    modulemonitor.stop()
+  }
+```
+
+Pretty simple!

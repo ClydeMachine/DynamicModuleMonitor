@@ -42,31 +42,40 @@ class DynamicModuleMonitor (
     while (this.iteration > -1) {
       if (monitorwindow != 0) this.iteration -= 1
 
+      // Set the previous runthrough's modules here so we can get the latest list of files, then diff them.
       previousModules = currentModules
       currentModules = describeDirectory(loadingdock_path).toBuffer[String].asInstanceOf[ArrayBuffer[String]]
       for (module <- currentModules) {
-        if (!previousModules.contains(module) && module == ".cleanup") {
-          logger.info(s".cleanup received - emptying the loadingdock.")
-          emptyDirectory()
-        } else if (!previousModules.contains(module) && module.contains(".scala")) {
+        if (!previousModules.contains(module) && module.contains(".scala")) {
           logger.warn(s"New module discovered: $module.")
           currentModules.append(module)
-
           // Launch the module as a concurrent task to allow for other modules to start.
           Future {moduleLauncher(module)}
           logger.warn(s"New module $module running concurrently.")
-        } else if (!previousModules.contains(module) && module.contains(".blueprint")) {
-          logger.info(s"New configuration discovered: $module.")
-          currentModules.append(module)
-          moduleWriter(module)
         } else if (!previousModules.contains(module)) {
-          logger.info(s"File $module not a module or blueprint, ignoring.")
+          logger.info(s"File $module not a module, ignoring.")
           currentModules.append(module)
         }
       }
+
+      if (currentModules.contains(".cleanup")) {
+        logger.info(s".cleanup received - emptying the loadingdock.")
+        emptyDirectory()
+      }
+
       print(".")
       Thread sleep 1000
     }
+
+    /**
+      * Just in case you want to trigger all modules all at once.
+      */
+    def launchAllModulesNow(): Unit = {
+      for (modulefilename <- describeDirectory(loadingdock_path)) {
+        if (modulefilename.contains(".scala")) Future {moduleLauncher(modulefilename)}
+      }
+    }
+
 
     logger.info("Monitor has ended.")
   }
