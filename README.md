@@ -16,8 +16,10 @@ Refer to the ```SandboxObject``` for some test code, and the ```loadingdockstagi
 
 You'll want to create an ```application.conf``` file like the example one I've made, that specifies what your monitoring directory will be. Absolute and relative paths are supported here - just make sure it includes a trailing "/" slash character.
 
+**NOTE:** The monitored directory is intended to function like temp space. It can be quickly emptied out by adding a file with ```.cleanup``` in the name, and the monitor will delete everything in that directory. Naturally, this means the directory should be empty except for when you have modules to run!
+
 ```
-// This is what your application.conf may contain. For now this is all you need in it
+// This is what your application.conf may contain. For now this is all you need in it.
 loadingdock_path = "loadingdock/"
 
 ```
