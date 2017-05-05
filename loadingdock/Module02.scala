@@ -1,7 +1,7 @@
 import java.io.{File, FileOutputStream, PrintWriter}
 
-class Module01 (
-                 val name: String = "Module-01"
+class Module02 (
+                 val name: String = "Module-02"
                ) {
   def someHandyFunction(): String = "Handy function output."
 }
@@ -12,3 +12,4 @@ val writer = new PrintWriter(new FileOutputStream(new File(filename_out), true))
 writer.write(s"[${val now = Calendar.getInstance().getTime()}] ${module.name} initialized!\n")
 writer.close()
 println(s"${module.name} completed!")
+

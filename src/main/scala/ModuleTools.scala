@@ -4,6 +4,8 @@ import DirectoryTools._
 import com.typesafe.config.ConfigFactory
 import org.slf4j.LoggerFactory
 
+import scala.collection.mutable.ArrayBuffer
+
 object ModuleTools {
 
   val loadingdock_path = ConfigFactory.load().getString("loadingdock_path")
@@ -37,7 +39,30 @@ object ModuleTools {
     for (modulefilename <- describeDirectory(loadingdock_path)) {
       moduleLauncher(modulefilename)
     }
+  }
 
+  def newModuleMonitor(monitorwindow: Int = 120): Unit = {
+
+    logger.info(s"Monitoring for new modules for $monitorwindow seconds...")
+    var previousModules: ArrayBuffer[String] = ArrayBuffer()
+    var currentModules: ArrayBuffer[String] = ArrayBuffer()
+
+    for (i <- monitorwindow to 0 by -1) {
+      previousModules = currentModules
+      currentModules = describeDirectory(loadingdock_path).toBuffer[String].asInstanceOf[ArrayBuffer[String]]
+      for (module <- currentModules) {
+        if (!previousModules.contains(module)) {
+          logger.info(s"New module discovered: $module.")
+          currentModules.append(module)
+          moduleLauncher(module)
+        } else {
+          print(".")
+        }
+        Thread sleep 1000
+      }
+    }
+
+    logger.info("Monitor has ended.")
   }
 
 }
