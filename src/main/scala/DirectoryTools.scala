@@ -1,7 +1,8 @@
 package pracmutatingcode
 
 import scala.collection.mutable.ArrayBuffer
-import java.io.File
+import java.io.{File, FileOutputStream, PrintWriter}
+import java.util.Calendar
 
 import com.typesafe.config.ConfigFactory
 import org.slf4j.LoggerFactory
@@ -14,8 +15,12 @@ object DirectoryTools {
   val loadingdock_path = ConfigFactory.load().getString("loadingdock_path")
   val logger = LoggerFactory.getLogger("DirectoryTools")
 
-  def writeToDirectory(modulecontents: Array[String], modulename: String): Unit = {
-
+  def writeToDirectory(modulecontents: String, modulename: String): Unit = {
+    val filename_out = s"${loadingdock_path}${modulename}"
+    val writer = new PrintWriter(new FileOutputStream(new File(filename_out), true))
+    writer.write(modulecontents)
+    writer.close()
+    logger.info(s"$modulename written!")
   }
 
   def readFile(modulefile: String): Array[String] = {

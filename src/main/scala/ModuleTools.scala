@@ -5,6 +5,7 @@ import com.typesafe.config.ConfigFactory
 import org.slf4j.LoggerFactory
 
 import scala.collection.mutable.ArrayBuffer
+import ModuleWriterTemplates._
 
 object ModuleTools {
 
@@ -35,9 +36,30 @@ object ModuleTools {
     readModuleFiles(modulenames)
   }
 
+  def modulePieces(userparam: String): String = {
+    if (userparam.contains("logwriter")) {
+      template_logwriter(userparam)
+    } else if (userparam.contains("eventwriter")) {
+      template_eventwriter(userparam)
+    } else {
+      ""
+    }
+  }
+
+  def moduleWriter(moduleconfigfilename: String): Unit = {
+    val modulename: String = s"${moduleconfigfilename.split('.')(0)}.scala"
+    logger.info(s"Modulename determined to be $modulename.")
+    val configcontents: String = readFile(s"$moduleconfigfilename").mkString(" ")
+    logger.info(s"Config file $moduleconfigfilename contains '${configcontents}'.")
+    val modulecontents = modulePieces(configcontents)
+    logger.info(s"Writing file $modulename.")
+    writeToDirectory(modulecontents,modulename)
+    logger.info(s"moduleWriter finished.")
+  }
+
   def launchAllModules(): Unit = {
     for (modulefilename <- describeDirectory(loadingdock_path)) {
-      moduleLauncher(modulefilename)
+      if (!modulefilename.contains(".conf")) moduleLauncher(modulefilename)
     }
   }
 
@@ -51,10 +73,14 @@ object ModuleTools {
       previousModules = currentModules
       currentModules = describeDirectory(loadingdock_path).toBuffer[String].asInstanceOf[ArrayBuffer[String]]
       for (module <- currentModules) {
-        if (!previousModules.contains(module)) {
+        if (!previousModules.contains(module) && !module.contains(".conf")) {
           logger.info(s"New module discovered: $module.")
           currentModules.append(module)
           moduleLauncher(module)
+        } else if (!previousModules.contains(module) && module.contains(".conf")) {
+          logger.info(s"New configuration discovered: $module.")
+          currentModules.append(module)
+          moduleWriter(module)
         } else {
           print(".")
         }
