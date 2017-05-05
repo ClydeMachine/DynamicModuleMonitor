@@ -23,3 +23,5 @@ This will satisfy the criteria for what I call self-mutating code.
 1. If a module/config pair are found, the config should describe how the module is to be run (i.e. start a Future for it and run x times at y interval, output results to z file.)
 1. Make a simple superclass and child.
 1. Make a module that creates a child extending that superclass.
+1. Make that module usable in the code (might be tricky without knowing the name of the child class)
+1. Make the package into a reusable library.
