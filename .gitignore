@@ -4,3 +4,4 @@ target/
 var/log/*.log
 loadingdock/*.conf*
 loadingdock/*.scala*
+test/
